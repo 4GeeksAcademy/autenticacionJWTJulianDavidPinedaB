@@ -44,3 +44,26 @@ def login():
         "name": user.name,
         "email": user.email
     }), 200
+
+@api.route('/signup', method=["POST"])
+def singup():
+    body = request .get_json()
+
+    if not body.get('name') or not body.get('password'):
+        return jsonify({"error": "Email y password son requeridos"}), 400
+    
+    if User.query.filter_by(email=body['email']).first():
+        return jsonify({"error": "Email ya esxiste"}), 400
+    
+    user = User(
+        email=body['email'],
+        password=body['password'],
+        is_active=True
+    )
+
+    try:
+        db.session.add(user)
+        db.session.commit()
+    except:
+        return jsonify({"msg": "Usuario no creado"}), 500
+     
