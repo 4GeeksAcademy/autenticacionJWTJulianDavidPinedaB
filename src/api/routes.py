@@ -66,5 +66,9 @@ def signup():
         db.session.commit()
     except:
         return jsonify({"msg": "Usuario no creado"}), 500
-    return jsonify(user.serialize()), 201
+    return jsonify({
+        "mensaje": "usuario registrado exitosamente",
+        "user": user.serialize()
+        }
+        ), 201
      

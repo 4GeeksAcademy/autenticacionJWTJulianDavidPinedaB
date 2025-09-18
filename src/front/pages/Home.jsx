@@ -25,46 +25,71 @@ export const Home = () => {
 	const singup = async (e) => {
 		e.preventDefault();
 
-		
+
 		if (!datosUsuarios.email || !datosUsuarios.password) {
 			toast.error("Todos los datos son requeridos")
 			return;
 		}
 
-		const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/signup`, {
-			method: 'POST',
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(datosUsuarios)
-		});
-
-			
-			
-
-		if (response.ok) {
+		try {
+			const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/signup`, {
+				method: 'POST',
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(datosUsuarios)
+			});		
 			const data = await response.json();
-			console.log("Success data:", data);
 
-			dispatch({
-				type: 'set_singup',
-				payload: datosUsuarios
-			});
-
-			localStorage.setItem('nuevoUsuarioEmail', datosUsuarios.email);
-
-			toast.success('Registro exitoso. Ahora puedes iniciar sesión.')
-			navigate('/login')
+		console.log("=== DEBUG ===");
+        console.log("Response status:", response.status);
+        console.log("Response ok:", response.ok);
+        console.log("Data recibida:", data);
+        console.log("data.message:", data.message);
 
 
-		} else {
-			
-			const error = await response.json();
-			toast.error(error.error || 'Error en el registro')
+			if (response.ok) {
+
+				 console.log("Entrando en bloque de éxito");
+
+				dispatch({
+					type: 'set_singup',
+					payload: datosUsuarios
+				});
+
+				localStorage.setItem('nuevoUsuarioEmail', datosUsuarios.email);
+
+				 const successMessage = data.mensaje || 'Registro exitoso. Ahora puedes iniciar sesión.';
+            console.log("Mensaje a mostrar:", successMessage);
+            
+            // Probar toast directamente
+            toast.success(successMessage);
+            
+            // También probar con un mensaje simple para descartar problemas
+            console.log("Toast llamado");
+
+				// toast.success(data.message || 'Registro exitoso. Ahora puedes iniciar sesión.')
+				setDatosUsuarios({email: "", password: ""})
+				
+
+				setTimeout(() => {
+                navigate('/login');
+            }, 1000);
+
+			} else {
+				
+				console.log("Entrando en bloque de error");
+            console.log("data.error:", data.error);
+			const errorMessage = data.error || data.msg || 'Error en el registro';
+				toast.error(errorMessage)
+			}
+		} catch(fetcherror){
+			 console.error("Error de conexión:", fetchError);
+			console.error("Error de conexión:", fetcherror);
+			toast.error("Error de conexión. Verifica tu internet y vuelve a intentar")
 		}
 
-
-	}
+	} 
 
 	return (
 		<div className="d-flex justify-content-center" 
@@ -74,7 +99,7 @@ export const Home = () => {
         padding: "150px",
         minHeight: '100vh'
       }}>
-			<form className="text-white">
+			<form className="text-white border rounded-4 p-5">
 				<h2 className="text-center">SingUp my friend</h2>
 				<div className="mb-3 mt-5">
 					<label htmlFor="email" className="form-label">Email address</label>
