@@ -1,6 +1,62 @@
-
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 export const Loging = () => {
+
+    const navigate = useNavigate();
+    const [credenciales, setCredenciales] = useState({});
+
+    const { dispatch } = useGlobalReducer();
+
+    const handleInputs = (e) => {
+        const key = e.target.id;
+
+        setCredenciales({
+            ...credenciales,
+            [key]: e.target.value
+        });
+    }
+
+    const autoriar = async (e) => {
+        e.preventDefault();
+
+        if (!credenciales.email || !credenciales.password){
+            toast.error('Por favor complete todos los campos.');
+            return;
+        }
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/login`, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(credenciales)
+        })
+        if(response.ok){
+            const data = await response.json();
+
+            dispatch({
+                type: 'set_profile',
+                payload:{ 
+                    token: data.access_token,
+                }  
+            })
+
+            localStorage.setItem('token', data.access_token);
+            localStorage.setItem('email', credenciales.email);
+
+            toast.success('!Bienvenido¡, Acceso concedido ')
+            navigate('/private')
+
+            return data;
+        } else {
+            if(response.status === 401){
+                toast.error("Credenciales incorrectas: Verifique su usuario y contraseña")
+            }
+        }
+
+    }
 
 
     return(
@@ -21,8 +77,7 @@ export const Loging = () => {
 						placeholder="email@email.com"
 						id="email" 
 						aria-describedby="emailHelp"
-						// value={datosUsuarios.email}
-						// onChange={handleInputs}
+						onChange={handleInputs}
 						required
 					/>
 						<div id="emailHelp" className="form-text text-white">We'll never share your email with anyone else.</div>
@@ -33,21 +88,16 @@ export const Loging = () => {
 						type="password" 
 						className="form-control" 
 						id="password"
-						// value={datosUsuarios.password}
-						// onChange={handleInputs}
+						onChange={handleInputs}
 						required
 					/>
 				</div>
-				<div className="mb-3 form-check">
-					<input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-						<label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
-				</div>
 				<button 
 					type="submit" 
-					className="btn btn-outline-secondary w-100"
-					// onClick={singup}
+					className="btn btn-outline-secondary w-100 mt-5"
+					onClick={autoriar}
 				>
-					SingUpMyFriend
+					LoginMyFriend
 					</button>
 			</form>
 		</div>

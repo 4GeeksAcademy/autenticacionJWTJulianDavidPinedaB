@@ -2,6 +2,7 @@ import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 export const Home = () => {
 
@@ -44,8 +45,6 @@ export const Home = () => {
 
 			if (response.ok) {
 
-				 console.log("Entrando en bloque de éxito");
-
 				dispatch({
 					type: 'set_singup',
 					payload: datosUsuarios
@@ -78,7 +77,7 @@ export const Home = () => {
 	return (
 		<div className="d-flex justify-content-center" 
 		style={{
-        backgroundColor: 'black',
+        backgroundColor: '#204556',
         margin: 0,
         padding: "150px",
         minHeight: '100vh'
@@ -90,7 +89,7 @@ export const Home = () => {
 					<input 
 						type="email" 
 						className="form-control" 
-						placeholder="email@email.com"
+						placeholder="jwt@email.com"
 						id="email" 
 						aria-describedby="emailHelp"
 						value={datosUsuarios.email}
@@ -110,17 +109,22 @@ export const Home = () => {
 						required
 					/>
 				</div>
-				<div className="mb-3 form-check">
-					<input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-						<label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
-				</div>
 				<button 
 					type="submit" 
-					className="btn btn-outline-secondary w-100"
+					className="btn btn-light w-100 mt-5"
 					onClick={singup}
 				>
 					SingUpMyFriend
 					</button>
+				<Link to="/login">
+					<button 
+						type="submit" 
+						className="btn btn-outline-secondary w-75 mt-5 mx-auto" 
+						id="exampleCheck1"
+					>
+						¿Ya tienes cuenta ? 
+					</button>
+				</Link>
 			</form>
 		</div>
 	);

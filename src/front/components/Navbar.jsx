@@ -3,16 +3,11 @@ import { Link } from "react-router-dom";
 export const Navbar = () => {
 
 	return (
-		<nav className="navbar navbar-light bg-light">
-			<div className="container">
-				<Link to="/">
-					<span className="navbar-brand mb-0 h1">React Boilerplate</span>
+		<nav className="navbar navbar-light bg-light ">
+			<div className="container ">
+				<Link className="text-decoration-none border rounded-3 px-2 content-center" to="/">
+					<span className="navbar-brand mb-0 ">Autenticación JWT con Flask y React.js</span>
 				</Link>
-				<div className="ml-auto">
-					<Link to="/demo">
-						<button className="btn btn-primary">Check the Context in action</button>
-					</Link>
-				</div>
 			</div>
 		</nav>
 	);

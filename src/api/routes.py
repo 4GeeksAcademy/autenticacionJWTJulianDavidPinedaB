@@ -30,7 +30,7 @@ def login():
     if not email:
         return jsonify({"msg": "Bag email or password in body."}), 401
     
-    user = User.query.filter_by(email=email).one_or_none()
+    user = User.query.filter_by(email=email).first()
 
     if not user:
         return jsonify({"msg": "Bad username or password"}, 401)
@@ -41,7 +41,6 @@ def login():
     access_token = create_access_token(identity=email)
     return jsonify({
         "access_token": access_token,
-        "name": user.name,
         "email": user.email
     }), 200
 
