@@ -41,12 +41,6 @@ export const Home = () => {
 			});		
 			const data = await response.json();
 
-		console.log("=== DEBUG ===");
-        console.log("Response status:", response.status);
-        console.log("Response ok:", response.ok);
-        console.log("Data recibida:", data);
-        console.log("data.message:", data.message);
-
 
 			if (response.ok) {
 
@@ -60,16 +54,11 @@ export const Home = () => {
 				localStorage.setItem('nuevoUsuarioEmail', datosUsuarios.email);
 
 				 const successMessage = data.mensaje || 'Registro exitoso. Ahora puedes iniciar sesión.';
-            console.log("Mensaje a mostrar:", successMessage);
             
-            // Probar toast directamente
+            
+           
             toast.success(successMessage);
-            
-            // También probar con un mensaje simple para descartar problemas
-            console.log("Toast llamado");
-
-				// toast.success(data.message || 'Registro exitoso. Ahora puedes iniciar sesión.')
-				setDatosUsuarios({email: "", password: ""})
+			setDatosUsuarios({email: "", password: ""})
 				
 
 				setTimeout(() => {
@@ -77,15 +66,10 @@ export const Home = () => {
             }, 1000);
 
 			} else {
-				
-				console.log("Entrando en bloque de error");
-            console.log("data.error:", data.error);
 			const errorMessage = data.error || data.msg || 'Error en el registro';
 				toast.error(errorMessage)
 			}
 		} catch(fetcherror){
-			 console.error("Error de conexión:", fetchError);
-			console.error("Error de conexión:", fetcherror);
 			toast.error("Error de conexión. Verifica tu internet y vuelve a intentar")
 		}
 
