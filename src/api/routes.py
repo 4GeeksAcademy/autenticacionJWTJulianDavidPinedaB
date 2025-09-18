@@ -22,7 +22,7 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
-@api.route('/login', method=['POST'])
+@api.route('/login', methods=['POST'])
 def login():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
@@ -36,24 +36,24 @@ def login():
         return jsonify({"msg": "Bad username or password"}, 401)
     
     if user.password != password:
-        return ({"msg": "Bad username or password"}), 401
+        return jsonify({"msg": "Bad username or password"}), 401
     
-    access_token = create_access_token(identify=email)
+    access_token = create_access_token(identity=email)
     return jsonify({
         "access_token": access_token,
         "name": user.name,
         "email": user.email
     }), 200
 
-@api.route('/signup', method=["POST"])
-def singup():
+@api.route('/signup', methods=["POST"])
+def signup():
     body = request .get_json()
 
-    if not body.get('name') or not body.get('password'):
+    if not body.get('email') or not body.get('password'):
         return jsonify({"error": "Email y password son requeridos"}), 400
     
     if User.query.filter_by(email=body['email']).first():
-        return jsonify({"error": "Email ya esxiste"}), 400
+        return jsonify({"error": "Email ya existe"}), 400
     
     user = User(
         email=body['email'],
@@ -66,4 +66,5 @@ def singup():
         db.session.commit()
     except:
         return jsonify({"msg": "Usuario no creado"}), 500
+    return jsonify(user.serialize()), 201
      
